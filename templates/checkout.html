@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% load custom_filters %}
+
+{% block title %}Checkout - Restaurant Management{% endblock %}
+
+{% block content %}
+<div class="py-5">
+    <h1 class="mb-4">Checkout</h1>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Order Details</h5>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="instructions" class="form-label">Special Instructions</label>
+                            <textarea class="form-control" id="instructions" name="instructions" rows="4" placeholder="Add any special requests for your order..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-lg">Place Order</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Order Summary</h5>
+                    <hr>
+                    {% for item in cart_items %}
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>{{ item.item.name }} x {{ item.quantity }}</span>
+                        <span>₹{{ item.total }}</span>
+                    </div>
+                    {% endfor %}
+                    <hr>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Subtotal:</span>
+                        <span>₹{{ total_price }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Delivery:</span>
+                        <span>₹15.00</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Tax:</span>
+                        <span>₹{{ total_price|add:"15"|mul:"0.1"|floatformat:2 }}</span>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between fs-5 fw-bold">
+                        <span>Total:</span>
+                        <span>₹{{ total_price|add:"15"|mul:"1.1"|floatformat:2 }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

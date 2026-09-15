@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}Order History - Restaurant Management{% endblock %}
+
+{% block content %}
+<div class="py-5">
+    <h1 class="mb-4">My Orders</h1>
+
+    {% if orders %}
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead class="table-light">
+                <tr>
+                    <th>Order ID</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Total</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                    <td>#{{ order.id }}</td>
+                    <td>{{ order.created_at|date:"M d, Y H:i" }}</td>
+                    <td>
+                        {% if order.status == 'pending' %}
+                        <span class="badge bg-warning">Pending</span>
+                        {% elif order.status == 'preparing' %}
+                        <span class="badge bg-info">Preparing</span>
+                        {% elif order.status == 'ready' %}
+                        <span class="badge bg-success">Ready</span>
+                        {% elif order.status == 'delivered' %}
+                        <span class="badge bg-success">Delivered</span>
+                        {% else %}
+                        <span class="badge bg-danger">{{ order.get_status_display }}</span>
+                        {% endif %}
+                    </td>
+                    <td>₹{{ order.total_price }}</td>
+                    <td>
+                        <a href="{% url 'order_detail' order.id %}" class="btn btn-sm btn-primary">View</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="alert alert-info" role="alert">
+        <h4 class="alert-heading">No orders yet</h4>
+        <p>You haven't placed any orders yet. <a href="{% url 'menu' %}">Start ordering</a></p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

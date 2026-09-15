@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - Restaurant Management{% endblock %}
+
+{% block content %}
+<div class="hero-section mt-5">
+    <h1>Welcome to Urban Crave</h1>
+    <p class="lead">Experience the finest dining with our exquisite menu and world-class service</p>
+    <div class="mt-4">
+        <a href="{% url 'menu' %}" class="btn btn-light btn-lg me-2">Browse Menu</a>
+        <a href="{% url 'booking' %}" class="btn btn-outline-light btn-lg">Book a Table</a>
+    </div>
+</div>
+
+<section class="py-5">
+    <div class="row">
+        <div class="col-md-4 text-center mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">🍽️ Premium Menu</h5>
+                    <p class="card-text">Carefully crafted dishes prepared by our expert chefs using the finest ingredients.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 text-center mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">🚚 Quick Delivery</h5>
+                    <p class="card-text">Order online and get your favorite meals delivered to your doorstep quickly.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 text-center mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">🎯 Best Prices</h5>
+                    <p class="card-text">Enjoy great quality food at affordable prices with special offers throughout the year.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5 bg-light">
+    <h2 class="text-center mb-4">Featured Dishes</h2>
+    <div class="row">
+        {% for item in featured_items %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card">
+                {% if item.image %}
+                <img src="{{ item.image.url }}" class="card-img-top product-img" alt="{{ item.name }}">
+                {% else %}
+                <div class="card-img-top product-img bg-secondary d-flex align-items-center justify-content-center">
+                    <span class="text-white">No Image</span>
+                </div>
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ item.name }}</h5>
+                    <p class="card-text text-muted">{{ item.description|truncatewords:15 }}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="price">₹{{ item.price }}</span>
+                        <span class="badge bg-secondary">{{ item.category.name }}</span>
+                    </div>
+                </div>
+                <div class="card-footer bg-white border-top-0">
+                    <form method="post" action="{% url 'add_to_cart' item.id %}">
+                        {% csrf_token %}
+                        <div class="input-group input-group-sm mb-2">
+                            <input type="number" name="quantity" class="form-control" value="1" min="1">
+                            <button class="btn btn-primary" type="submit">Add to Cart</button>
+                        </div>
+                    </form>
+                    <a href="{% url 'menu_detail' item.id %}" class="btn btn-outline-secondary btn-sm w-100">View Details</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center">
+            <p class="text-muted">No items available yet.</p>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="py-5">
+    <h2 class="text-center mb-4">Why Choose Us?</h2>
+    <div class="row">
+        <div class="col-md-3 text-center">
+            <h4>⭐ Quality</h4>
+            <p>Highest quality ingredients and preparation standards</p>
+        </div>
+        <div class="col-md-3 text-center">
+            <h4>👨‍🍳 Expert Chefs</h4>
+            <p>Experienced culinary professionals</p>
+        </div>
+        <div class="col-md-3 text-center">
+            <h4>🕐 Fast Service</h4>
+            <p>Quick service without compromising quality</p>
+        </div>
+        <div class="col-md-3 text-center">
+            <h4>💬 Support</h4>
+            <p>24/7 customer support and assistance</p>
+        </div>
+    </div>
+</section>
+
+<section class="py-5 bg-light">
+    <div class="row align-items-center">
+        <div class="col-md-6">
+            <h2>Reserve Your Table Today</h2>
+            <p>Book your table in advance and enjoy a seamless dining experience. Choose your preferred time and let us prepare for you.</p>
+            <a href="{% url 'booking' %}" class="btn btn-primary btn-lg">Book Now</a>
+        </div>
+        <div class="col-md-6">
+            <h2>Order Online</h2>
+            <p>Browse our complete menu and place your order online. Your meal will be prepared fresh and delivered to your door.</p>
+            <a href="{% url 'menu' %}" class="btn btn-primary btn-lg">Order Food</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

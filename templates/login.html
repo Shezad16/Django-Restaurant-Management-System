@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}Login - Restaurant Management{% endblock %}
+
+{% block content %}
+<div class="login-container">
+    <h2 class="text-center mb-4">Login to Your Account</h2>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="id_username" class="form-label">Username</label>
+            <input type="text" class="form-control" id="id_username" name="username" required autofocus>
+        </div>
+        <div class="mb-3">
+            <label for="id_password" class="form-label">Password</label>
+            <input type="password" class="form-control" id="id_password" name="password" required>
+        </div>
+        <button type="submit" class="btn btn-primary w-100 mb-3">Login</button>
+    </form>
+
+    <p class="text-center mb-0">
+        Don't have an account? <a href="{% url 'register' %}" style="text-decoration: none;">Register here</a>
+    </p>
+    <p class="text-center mt-2">
+        <a href="{% url 'forgot_password' %}" style="text-decoration: none;">Forgot Password?</a>
+    </p>
+</div>
+{% endblock %}

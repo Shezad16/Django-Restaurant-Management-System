@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}Booking History - Restaurant Management{% endblock %}
+
+{% block content %}
+<div class="py-5">
+    <h1 class="mb-4">My Bookings</h1>
+
+    {% if bookings %}
+    <div class="row">
+        {% for booking in bookings %}
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Booking for {{ booking.number_of_people }} Guest{{ booking.number_of_people|pluralize }}</h5>
+                    <p class="card-text">
+                        <strong>Date:</strong> {{ booking.booking_date|date:"M d, Y" }}<br>
+                        <strong>Time:</strong> {{ booking.booking_time|time:"H:i" }}<br>
+                        <strong>Status:</strong> <span class="badge {% if booking.status == 'confirmed' %}bg-success{% elif booking.status == 'completed' %}bg-info{% else %}bg-danger{% endif %}">{{ booking.get_status_display }}</span>
+                    </p>
+                    {% if booking.special_requests %}
+                    <p class="card-text"><small><strong>Requests:</strong> {{ booking.special_requests|truncatewords:10 }}</small></p>
+                    {% endif %}
+                    {% if booking.status != 'cancelled' %}
+                    <a href="{% url 'cancel_booking' booking.id %}" class="btn btn-sm btn-danger">Cancel Booking</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info" role="alert">
+        <h4 class="alert-heading">No bookings yet</h4>
+        <p>You haven't booked a table yet. <a href="{% url 'booking' %}">Book a table now</a></p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

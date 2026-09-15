@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+
+{% block title %}Register - Restaurant Management{% endblock %}
+
+{% block content %}
+<div class="register-container">
+    <h2 class="text-center mb-4">Create Your Account</h2>
+
+    <form method="post" id="register-form">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="id_username" class="form-label">Username</label>
+            <input type="text" class="form-control" id="id_username" name="username" required autofocus>
+        </div>
+        <div class="mb-3">
+            <label for="id_email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="id_email" name="email" required>
+        </div>
+        <div class="mb-3">
+            <label for="id_password" class="form-label">Password</label>
+            <input type="password" class="form-control" id="id_password" name="password" required>
+            <div class="form-text" id="password-hint">
+                Password should be at least 8 characters and include a mix of uppercase, lowercase, number, and symbol.
+            </div>
+            <ul class="list-unstyled small mt-2" id="password-strength-list">
+                <li id="pwd-length" class="text-danger">• At least 8 characters</li>
+                <li id="pwd-uppercase" class="text-danger">• One uppercase letter</li>
+                <li id="pwd-lowercase" class="text-danger">• One lowercase letter</li>
+                <li id="pwd-number" class="text-danger">• One number</li>
+                <li id="pwd-symbol" class="text-danger">• One symbol (e.g. !@#$%^&*)</li>
+            </ul>
+        </div>
+        <div class="mb-3">
+            <label for="id_password_confirm" class="form-label">Confirm Password</label>
+            <input type="password" class="form-control" id="id_password_confirm" name="password_confirm" required>
+            <div class="form-text" id="password-match-hint">Passwords must match.</div>
+        </div>
+        <button type="submit" class="btn btn-primary w-100 mb-3" id="register-submit">Register</button>
+    </form>
+    <script>
+        const passwordInput = document.getElementById('id_password');
+        const passwordConfirmInput = document.getElementById('id_password_confirm');
+
+        const checks = {
+            length: document.getElementById('pwd-length'),
+            uppercase: document.getElementById('pwd-uppercase'),
+            lowercase: document.getElementById('pwd-lowercase'),
+            number: document.getElementById('pwd-number'),
+            symbol: document.getElementById('pwd-symbol'),
+        };
+
+        const matchHint = document.getElementById('password-match-hint');
+
+        function updatePasswordHints() {
+            const value = passwordInput.value;
+            const hasLength = value.length >= 8;
+            const hasUpper = /[A-Z]/.test(value);
+            const hasLower = /[a-z]/.test(value);
+            const hasNumber = /[0-9]/.test(value);
+            const hasSymbol = /[^A-Za-z0-9]/.test(value);
+
+            checks.length.classList.toggle('text-success', hasLength);
+            checks.length.classList.toggle('text-danger', !hasLength);
+            checks.uppercase.classList.toggle('text-success', hasUpper);
+            checks.uppercase.classList.toggle('text-danger', !hasUpper);
+            checks.lowercase.classList.toggle('text-success', hasLower);
+            checks.lowercase.classList.toggle('text-danger', !hasLower);
+            checks.number.classList.toggle('text-success', hasNumber);
+            checks.number.classList.toggle('text-danger', !hasNumber);
+            checks.symbol.classList.toggle('text-success', hasSymbol);
+            checks.symbol.classList.toggle('text-danger', !hasSymbol);
+        }
+
+        function updateMatchHint() {
+            if (!passwordConfirmInput.value) {
+                matchHint.textContent = 'Passwords must match.';
+                matchHint.classList.remove('text-success', 'text-danger');
+                return;
+            }
+
+            const match = passwordInput.value === passwordConfirmInput.value;
+            matchHint.textContent = match ? 'Passwords match.' : 'Passwords do not match.';
+            matchHint.classList.toggle('text-success', match);
+            matchHint.classList.toggle('text-danger', !match);
+        }
+
+        passwordInput.addEventListener('input', () => {
+            updatePasswordHints();
+            updateMatchHint();
+        });
+
+        passwordConfirmInput.addEventListener('input', updateMatchHint);
+    </script>
+
+    <p class="text-center mb-0">
+        Already have an account? <a href="{% url 'login' %}" style="text-decoration: none;">Login here</a>
+    </p>
+</div>
+{% endblock %}

@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% load custom_filters %}
+
+{% block title %}Shopping Cart - Restaurant Management{% endblock %}
+
+{% block content %}
+<div class="py-5">
+    <h1 class="mb-4">🍛 Food Cart</h1>
+
+    {% if cart_items %}
+    <div class="row">
+        <div class="col-md-8">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Total</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in cart_items %}
+                        <tr>
+                            <td>
+                                <strong>{{ item.item.name }}</strong><br>
+                                <small class="text-muted">{{ item.item.category.name }}</small>
+                            </td>
+                            <td>₹{{ item.item.price }}</td>
+                            <td>
+                                <form method="post" action="{% url 'update_cart' item.item.id %}" class="d-inline">
+                                    {% csrf_token %}
+                                    <div class="input-group input-group-sm" style="width: 100px;">
+                                        <input type="number" name="quantity" value="{{ item.quantity }}" min="1" class="form-control" onchange="this.form.submit()">
+                                    </div>
+                                </form>
+                            </td>
+                            <td>₹{{ item.total }}</td>
+                            <td>
+                                <form method="post" action="{% url 'remove_from_cart' item.item.id %}" class="d-inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm btn-danger">Remove</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Order Summary</h5>
+                    <hr>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Subtotal:</span>
+                        <span>₹{{ total_price }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Delivery:</span>
+                        <span>₹15.00</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Tax:</span>
+                        <span>₹{{ total_price|add:"15"|mul:"0.1"|floatformat:2 }}</span>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between fs-5 fw-bold">
+                        <span>Total:</span>
+                        <span>₹{{ total_price|add:"15"|mul:"1.1"|floatformat:2 }}</span>
+                    </div>
+                    <a href="{% url 'checkout' %}" class="btn btn-primary btn-lg w-100 mt-3">Proceed to Checkout</a>
+                    <a href="{% url 'menu' %}" class="btn btn-outline-secondary w-100 mt-2">Continue Shopping</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="alert alert-info" role="alert">
+        <h4 class="alert-heading">Your cart is empty!!</h4>
+        <p>Explore Dishes by browsing our menu.</p>
+        <a href="{% url 'menu' %}" class="btn btn-primary">Browse Menu</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
