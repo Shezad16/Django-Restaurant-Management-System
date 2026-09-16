@@ -1,2 +1,17 @@
+[project]
+name = "restaurant-management-system"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "django==6.0.4",
+    "djangorestframework==3.17.1",
+    "Pillow==12.2.0",
+    "python-decouple==3.8",
+    "dj-database-url==3.1.2",
+    "psycopg[binary]==3.3.5",
+    "razorpay==2.0.1",
+    "requests==2.34.2",
+]
+
 [tool.vercel.scripts]
-build = "python manage.py migrate --noinput"
+build = 'if [ -n "$DATABASE_URL" ]; then python manage.py migrate --noinput; fi'
